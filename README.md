@@ -1,0 +1,1 @@
+# Technical Assessment for the Responsable Technique Data, Stratégie et Intégrations role
