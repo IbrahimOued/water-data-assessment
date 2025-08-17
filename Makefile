@@ -22,6 +22,13 @@ start: check-docker
 		echo "ERREUR : Échec du démarrage des conteneurs Docker. Veuillez vérifier le fichier docker compose et réessayer." >&2; \
 		exit 1; \
 	fi
+	@sleep 10
+	@echo "Vérification de l'état du conteneur Airflow..."
+	@docker inspect -f '{{.State.Health.Status}}' airflow
+	@echo "Trigger du DAG..."
+	@docker exec airflow airflow dags trigger upload_water_metering_to_postgres
+	@echo "Vérification de l'état du DAG..."
+	@docker exec airflow airflow dags list-runs upload_water_metering_to_postgres
 	@echo "Les conteneurs Docker ont démarré avec succès."
 
 

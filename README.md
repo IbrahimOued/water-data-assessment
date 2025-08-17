@@ -15,6 +15,7 @@ Pour lancer le projet, vous devez avoir installé:
 git clone https://github.com/IbrahimOued/water-data-assessment.git
 cd water-data-assessment
 ```
+
 ## Architecture du système
 
 * Serveur backend: **FastAPI**
@@ -27,13 +28,14 @@ cd water-data-assessment
 
 ## Lancement du projet
 
-### Avec Makefile
+### Avec Makefile Linux si installé (Recommandé car plus simple)
 
 #### Pour lancer les différentes applications de la stack
 
 ```bash
 make start
 ```
+
 Cela lancera tous les conteneurs Docker définis dans le fichier `docker-compose.yaml`.
 
 #### Pour générer les credentials de connexion pour Apache Airflow
@@ -43,6 +45,34 @@ make credentials
 ```
 
 > Note: Les informations seront dans le fichier `airflow_credentials.txt` à la racine.
+
+### Avec Docker compose
+
+#### Pour lancer les différentes applications de la stack 
+
+```bash
+docker-compose up
+```
+
+Cela lancera tous les conteneurs Docker définis dans le fichier `docker-compose.yaml`.
+
+#### Trigger le DAG
+
+```bash
+docker exec airflow airflow dags trigger upload_water_metering_to_postgres
+```
+
+#### Vérification de l'état du DAG
+
+```bash
+docker exec airflow airflow dags list-runs upload_water_metering_to_postgres
+```
+
+#### Pour générer les credentials de connexion pour Apache Airflow
+
+```bash
+docker exec airflow bash -c "cat simple_auth_manager_passwords.json.generated" > airflow_credentials.txt
+```
 
 ## Test des différents services
 
@@ -54,7 +84,6 @@ Allez sur [http://localhost:8000/docs](http://localhost:8000/docs) pour accéder
 Vous aurez accès à tous les endpoints de l'API que vous pourrez tester directement.
 
 ![alt text](endpoints.png)
-
 
 #### Via CURL
 
@@ -95,4 +124,10 @@ Pour stopper les différents services, vous pouvez utiliser la commande suivante
 
 ```bash
 make stop
+```
+
+Ou si vous utilisez Docker Compose, vous pouvez utiliser la commande suivante:
+
+```bash
+docker-compose down
 ```

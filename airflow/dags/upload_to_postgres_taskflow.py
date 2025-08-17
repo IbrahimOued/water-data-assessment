@@ -30,6 +30,7 @@ def sanitize_table_name(file_name: str) -> str:
     start_date=datetime(2025, 8, 1),
     schedule="@once",
     catchup=False,
+    is_paused_upon_creation=False,
     tags=['postgres', 'water-metering'],
     doc_md="DAG to process CSV files with merged headers and upload to the water_metering schema in PostgreSQL."
 )
