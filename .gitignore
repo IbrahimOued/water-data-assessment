@@ -23,6 +23,6 @@ package-lock.json
 
 # AI Usage Pdf
 # Ignore all files in the docs folder
-ai_usage/*
+docs/ai_usage/*
 # Except for important.pdf
-!ai_usage/ai_usage.pdf
+!docs/ai_usage/ai_usage.pdf

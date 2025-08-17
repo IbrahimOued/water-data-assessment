@@ -1,4 +1,8 @@
-# Technical Assessment for the Responsable Technique Data, Stratégie et Intégrations role
+# Documentation de la solution au Technical Assessment
+
+---
+
+Cette documentation a pour but de vous guider à travers le processus de mise en place et de test de l'application.
 
 ## Prérequis
 
@@ -15,6 +19,9 @@ Pour lancer le projet, vous devez avoir installé:
 git clone https://github.com/IbrahimOued/water-data-assessment.git
 cd water-data-assessment
 ```
+## Architecture de la base de données
+
+![Database schema](db_schema.png)
 
 ## Architecture du système
 
@@ -69,7 +76,7 @@ docker exec airflow airflow dags list-runs upload_water_metering_to_postgres
 ```
 L'état du DAG sera affiché `success` dans la sortie.
 
-![alt text](success.png)
+![Message de success du DAG](success.png)
 
 #### Pour générer les credentials de connexion pour Apache Airflow
 
@@ -86,7 +93,7 @@ docker exec airflow bash -c "cat simple_auth_manager_passwords.json.generated" >
 Allez sur [http://localhost:8000/docs](http://localhost:8000/docs) pour accéder à la documentation Swagger.
 Vous aurez accès à tous les endpoints de l'API que vous pourrez tester directement.
 
-![alt text](endpoints.png)
+![Endpoints du serveur bqckend](endpoints.png)
 
 #### Via CURL
 
@@ -116,7 +123,9 @@ Une démonstration en sera faite.
 Allez sur le [http://localhost:8080](http://localhost:8080) pour accéder à l'interface web d'Apache Airflow.
 Les informations de connexions sont disponibles dans le fichier `airflow_credentials.txt` à la racine.
 
-> Note: Assurez vous d'avoir exécuter `make credentials` avant générer les informations de connexion.
+> Note: Assurez vous d'avoir exécuter `make credentials` (si vous utilisez Makefile) ou la commande:
+> `docker exec airflow bash -c "cat simple_auth_manager_passwords.json.generated" > airflow_credentials.txt`
+> afin de pouvoir générer les informations de connexion et vous connecter à l'interface Apache Airflow.
 
 Cet outil vous permettra de créer des workflows et des tâches automatisées pour notre application, d'intégrer une pipeline ETL automatisée. Ici nous l'utilisons
 dans un exemple simple afin d'extraire les données via le fichier CSV (dans un cas réel, cela pourrait être une API, une base de données ou des capteurs), de les transformer et de les charger dans la base de données PostgreSQL.
