@@ -8,3 +8,14 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Docker local files
+docker/*
+
+# Presentation
+presentation/
+
+# Frontend
+
+node_modules/
+package-lock.json

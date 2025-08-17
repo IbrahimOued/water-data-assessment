@@ -1,0 +1,99 @@
+services:
+
+    frontend:
+        env_file:
+            - ./frontend/frontend.env
+        build:
+            context: ./frontend
+        ports:
+            - "5000:80"
+
+    backend:
+        env_file:
+            - ./backend/backend.env
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        depends_on:
+            - postgres
+        volumes:
+            - ./backend:/app
+
+    airflow:
+        build:
+            context: ./airflow
+        env_file:
+            - .env
+        container_name: airflow
+        depends_on:
+            - mysql
+        environment:
+            - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+            - AIRFLOW_CONN_POSTGRES_DEFAULT=${AIRFLOW_CONN_POSTGRES_DEFAULT}
+            - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=mysql+mysqldb://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql/${MYSQL_DATABASE}
+            - AIRFLOW__CORE__LOAD_EXAMPLES=False
+            - AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS=${AIRFLOW_SIMPLE_AUTH_MANAGER_USER}
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./airflow/dags:/opt/airflow/dags
+            - ./dataset:/opt/airflow/dataset
+        command: >
+            bash -c "airflow standalone"
+
+        restart: unless-stopped
+
+    postgres:
+        image: postgis/postgis:17-3.5-alpine
+        container_name: postgres
+        env_file:
+            - .env
+        hostname: postgres
+        ports:
+        - "5432:5432"
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        volumes:
+            - ./docker/postgres:/var/lib/postgresql/data
+            - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    mysql:
+        image: mysql:latest
+        env_file:
+            - .env
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-airflow}
+            MYSQL_DATABASE: ${MYSQL_DATABASE:-airflow}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./docker/mysql:/var/lib/mysql
+        restart: unless-stopped
+    metabase:
+        image: metabase/metabase
+        env_file:
+            - .env
+        container_name: metabase
+        ports:
+            - "3000:3000"
+        environment:
+            MB_DB_TYPE: ${MB_DB_TYPE}
+            MB_DB_HOST: ${MB_DB_HOST}
+            MB_DB_PORT: ${MB_DB_PORT}
+            MB_DB_USER: ${MB_DB_USER}
+            MB_DB_PASS: ${MB_DB_PASS}
+            MB_DB_DBNAME: ${MB_DB_DBNAME}
+        depends_on:
+            - postgres
+        volumes:
+            - ./docker/metabase:/metabase
+
+volumes:
+    postgres:
+    mysql:
+    metabase:
