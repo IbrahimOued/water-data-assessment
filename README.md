@@ -67,6 +67,9 @@ docker exec airflow airflow dags trigger upload_water_metering_to_postgres
 ```bash
 docker exec airflow airflow dags list-runs upload_water_metering_to_postgres
 ```
+L'état du DAG sera affiché `success` dans la sortie.
+
+![alt text](success.png)
 
 #### Pour générer les credentials de connexion pour Apache Airflow
 
