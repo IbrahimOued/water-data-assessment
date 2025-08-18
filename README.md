@@ -19,6 +19,17 @@ Pour lancer le projet, vous devez avoir installé:
 git clone https://github.com/IbrahimOued/water-data-assessment.git
 cd water-data-assessment
 ```
+
+## Activer l'environnement virtuel python
+
+```bash
+uv venv
+source .venv/bin/activate
+uv sync
+```
+
+> Note: Sur windows, `source .venv/Scripts/activate` sera remplacé par `.venv\Scripts\activate`.
+
 ## Architecture de la base de données
 
 ![Database schema](db_schema.png)
